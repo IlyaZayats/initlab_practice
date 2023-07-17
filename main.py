@@ -5,6 +5,7 @@ import math
 from environment import MySQLEnv
 
 env = MySQLEnv()
+env.init()
 
 class ParameterNoise(keras.layers.Layer):
     def __init__(self, units):

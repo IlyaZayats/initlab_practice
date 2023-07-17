@@ -65,6 +65,7 @@ class MySQLEnv:
     ###
     def step(self, knobs):
         self.steps += 1
+        k_s = self.apply_knobs(knobs)
         s = self.get_states()
         latency, internal_metrics, resource = s
         reward = self.get_reward(latency)
@@ -94,7 +95,7 @@ class MySQLEnv:
         self.last_latency = latency
         self.default_latency = latency
         state = internal_states
-        return state, latency, resource
+        return state
 
     def get_reward(self, latency):
 
