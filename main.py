@@ -2,10 +2,9 @@ import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 import math
+from environment import MySQLEnv
 
-
-
-states_list =
+env = MySQLEnv()
 
 class ParameterNoise(keras.layers.Layer):
     def __init__(self, units):
@@ -211,7 +210,7 @@ avg_reward_list = []
 # Takes about 4 min to train
 for ep in range(total_episodes):
 
-    prev_state = env.reset()
+    prev_state = env.init()
     episodic_reward = 0
 
     while True:

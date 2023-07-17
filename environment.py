@@ -63,8 +63,14 @@ class MySQLEnv:
         self.db_con.connect_db()
 
     ###
-    def step(self):
+    def step(self, knobs):
         self.steps += 1
+        s = self.get_states()
+        latency, internal_metrics, resource = s
+        reward = self.get_reward(latency)
+        next_state = internal_metrics
+
+        return next_state, reward, False, latency
 
     def init(self):
         self.score = 0.
@@ -73,14 +79,14 @@ class MySQLEnv:
 
         flag = self.apply_knobs(self.default_knobs)
         while not flag:
-            print("Waiting 10 seconds")
-            time.sleep(10)
+            print("Waiting 10 seconds. apply_knobs")
+            time.sleep(20)
             flag = self.apply_knobs(self.default_knobs)
 
         s = self.get_states()
         while not s:
-            print("Waiting 10 seconds")
-            time.sleep(10)
+            print("Waiting 10 seconds. get_states")
+            time.sleep(20)
             s = self.get_states()
 
         latency, internal_states, resource = s
