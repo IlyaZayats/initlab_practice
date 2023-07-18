@@ -80,13 +80,13 @@ class MySQLEnv:
 
         flag = self.apply_knobs(self.default_knobs)
         while not flag:
-            print("Waiting 10 seconds. apply_knobs")
+            print("Waiting 20 seconds. apply_knobs")
             time.sleep(20)
             flag = self.apply_knobs(self.default_knobs)
 
         s = self.get_states()
         while not s:
-            print("Waiting 10 seconds. get_states")
+            print("Waiting 20 seconds. get_states")
             time.sleep(20)
             s = self.get_states()
 
