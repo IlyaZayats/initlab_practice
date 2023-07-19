@@ -1,7 +1,7 @@
 import time
 import mysql.connector
 import math
-import threading
+import subprocess
 import os
 import psutil
 from datetime import datetime
@@ -174,7 +174,7 @@ class MySQLEnv:
             if r:
                 break
             time.sleep(20)
-    ##   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###
+
     def apply_knobs(self, knobs):
         self.db_is_alive()
         db_conn = MysqlConnector()
@@ -185,8 +185,13 @@ class MySQLEnv:
             except:
                 sql = f"SET {knobs_definition[i]} = {knobs[i]}"
                 db_conn.execute(sql)
-        db_conn.close_db() 
+        db_conn.close_db()
+        self.db_restart()
     ##
+
+    def db_restart(self):
+        subprocess.call(["\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqladmin.exe\" -u root shutdown -p\"root\""])
+        subprocess.call(["\"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld\" --defaults-file=\"C:\Program Files\MySQL\MySQL Server 8.0\my.ini\""])
 
     def get_latency(self):
         self.db_con.connect_db()
@@ -197,46 +202,13 @@ class MySQLEnv:
         return math.fabs(t2-t1)
 
     def get_internal_metrics(self, internal_metrics):
-        global BENCHMARK_RUNNING_TIME, BENCHMARK_WARMING_TIME, TIMEOUT, RESTART_FREQUENCY
-        BENCHMARK_RUNNING_TIME, BENCHMARK_WARMING_TIME, RESTART_FREQUENCY = 120, 30, 200
-        TIMEOUT = BENCHMARK_RUNNING_TIME + BENCHMARK_WARMING_TIME + 15
-
-        self.connect_sucess = True
-        _counter = 0
-        _period = 5
-        count = (BENCHMARK_RUNNING_TIME + BENCHMARK_WARMING_TIME) / _period - 1
-        warmup = BENCHMARK_WARMING_TIME / _period
-
-        def collect_metric(counter):
-            counter += 1
-            print(counter)
-            timer = threading.Timer(float(_period), collect_metric, (counter,))
-            timer.start()
-            if counter >= count:
-                timer.cancel()
-            try:
-                db_conn = MysqlConnector(host=self.host,
-                                         port=self.port,
-                                         user=self.user,
-                                         passwd=self.passwd,
-                                         name=self.dbname,
-                                         socket=self.sock)
-            except:
-                if counter > warmup:
-                    self.connect_sucess = False
-                    return
-            try:
-                if counter > warmup:
-                    sql = 'SELECT NAME, COUNT from information_schema.INNODB_METRICS where status="enabled" ORDER BY NAME'
-                    res = db_conn.fetch_results(sql, json=False)
-                    res_dict = {}
-                    for (k, v) in res:
-                        res_dict[k] = v
-                    internal_metrics.append(res_dict)
-            except Exception:
-                self.connect_sucess = False
-
-        collect_metric(_counter)
+        db_conn = MysqlConnector()
+        sql = 'SELECT NAME, COUNT from information_schema.INNODB_METRICS where status="enabled" ORDER BY NAME'
+        res = db_conn.fetch_results(sql)
+        res_dict = {}
+        for (k, v) in res:
+            res_dict[k] = v
+        internal_metrics.append(res_dict)
         return internal_metrics
 
     def get_states(self):

@@ -383,14 +383,11 @@ class OUActionNoise:
         self.reset()
 
     def __call__(self):
-        # Formula taken from https://www.wikipedia.org/wiki/Ornstein-Uhlenbeck_process.
         x = (
             self.x_prev
             + self.theta * (self.mean - self.x_prev) * self.dt
             + self.std_dev * np.sqrt(self.dt) * np.random.normal(size=self.mean.shape)
         )
-        # Store x into x_prev
-        # Makes next noise dependent on current one
         self.x_prev = x
         return x
 
@@ -435,21 +432,19 @@ class Buffer:
         with tf.GradientTape() as tape:
             actions = actor_model(state_batch, training=True)
             critic_value = critic_model([state_batch, actions], training=True)
-            # Used `-value` as we want to maximize the value given
-            # by the critic for our actions
+
             actor_loss = -tf.math.reduce_mean(critic_value)
 
         actor_grad = tape.gradient(actor_loss, actor_model.trainable_variables)
         actor_optimizer.apply_gradients(zip(actor_grad, actor_model.trainable_variables))
 
-    # We compute the loss and update parameters
+
     def learn(self):
-        # Get sampling range
+
         record_range = min(self.counter, self.capacity)
-        # Randomly sample indices
+
         batch_indices = np.random.choice(record_range, self.batch_size)
 
-        # Convert to tensors
         state_batch = tf.convert_to_tensor(self.state_buffer[batch_indices])
         action_batch = tf.convert_to_tensor(self.action_buffer[batch_indices])
         reward_batch = tf.convert_to_tensor(self.reward_buffer[batch_indices])
@@ -506,12 +501,10 @@ def get_model_critic(n_states, n_actions):
 
 def policy(state, noise_object):
     sampled_actions = tf.squeeze(actor_model(state))
-    # Adding noise to action
     for i in range(len(sampled_actions)):
         noise = noise_object()
         sampled_actions[i] = sampled_actions[i].numpy() + noise
 
-    # We make sure action is within bounds
     legal_actions = np.clip(sampled_actions, knobs_min_list, knobs_max_list)
 
     return [np.squeeze(legal_actions)]
@@ -526,11 +519,9 @@ critic_model = get_model_critic(states_amount, knobs_amount)
 target_actor = get_model_actor(states_amount, knobs_amount)
 target_critic = get_model_critic(states_amount, knobs_amount)
 
-# Making the weights equal initially
 target_actor.set_weights(actor_model.get_weights())
 target_critic.set_weights(critic_model.get_weights())
 
-# Learning rate for actor-critic models
 critic_lr = 0.002
 actor_lr = 0.001
 
@@ -538,32 +529,26 @@ critic_optimizer = tf.keras.optimizers.Adam(critic_lr)
 actor_optimizer = tf.keras.optimizers.Adam(actor_lr)
 
 total_episodes = 100
-# Discount factor for future rewards
+
 gamma = 0.99
-# Used to update target networks
+
 tau = 0.005
 
 buffer = Buffer(50000, 16)
 
 ep_reward_list = []
-# To store average reward history of last few episodes
 avg_reward_list = []
 
-# Takes about 4 min to train
 for ep in range(total_episodes):
 
     prev_state = env.init()
     episodic_reward = 0
 
     while True:
-        # Uncomment this to see the Actor in action
-        # But not in a python notebook.
-        # env.render()
 
         tf_prev_state = tf.expand_dims(tf.convert_to_tensor(prev_state), 0)
 
         actions = policy(tf_prev_state, ou_noise)
-        # Recieve state and reward from environment.
         state, reward, done, info = env.step(actions)
 
         buffer.record((prev_state, actions, reward, state))
@@ -573,7 +558,6 @@ for ep in range(total_episodes):
         update_target(target_actor.variables, actor_model.variables, tau)
         update_target(target_critic.variables, critic_model.variables, tau)
 
-        # End this episode when `done` is True
         if done:
             break
 
@@ -581,12 +565,8 @@ for ep in range(total_episodes):
 
     ep_reward_list.append(episodic_reward)
 
-    # Mean of last 40 episodes
     avg_reward = np.mean(ep_reward_list[-40:])
     print("Episode * {} * Avg Reward is ==> {}".format(ep, avg_reward))
     avg_reward_list.append(avg_reward)
 
-#m1 = get_model_actor(64,64)
-#m2 = get_model_critic(64,64)
-#m1.summary()
-#m2.summary()
+
