@@ -191,7 +191,7 @@ class MySQLEnv:
 
     def db_restart(self):
         subprocess.call(["\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqladmin.exe\" -u root shutdown -p\"root\""])
-        subprocess.call(["\"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld\" --defaults-file=\"C:\Program Files\MySQL\MySQL Server 8.0\my.ini\""])
+        subprocess.call(["\"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld\" --defaults-file=\"C:\Program Files\MySQL\MySQL Server 8.0\my.ini\" "])
 
     def get_latency(self):
         self.db_con.connect_db()
