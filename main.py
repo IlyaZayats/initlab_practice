@@ -4,6 +4,7 @@ import numpy as np
 import math
 from environment import MySQLEnv
 
+
 knobs_default = {
     'innodb_adaptive_flushing_lwm': 10,  # 0-10-70
     'innodb_adaptive_hash_index': True,  # OFF-ON-ON
@@ -340,9 +341,9 @@ knobs_min = {
 #Сделай
 states_list = []
 
-knobs_min_list = knobs_min.values()
-knobs_max_list = knobs_max.values()
-knobs_default_list = knobs_default.values()
+knobs_min_list = list(knobs_min.values())
+knobs_max_list = list(knobs_max.values())
+knobs_default_list = list(knobs_default.values())
 
 env = MySQLEnv(knobs_default.keys(), states_list, knobs_default_list)
 env.init()
@@ -477,8 +478,8 @@ def get_model_actor(n_states, n_actions):
     x = keras.activations.tanh(x)
     x = keras.layers.Dropout(rate=0.3)(x)
     x = keras.layers.BatchNormalization()(x)
-    x = keras.layers.Dense(units=n_actions, activation="sigmoid", kernel_initializer=last_init)(x)
-    outputs = ParameterNoise(units=n_actions)(x)
+    outputs = keras.layers.Dense(units=n_actions, activation="sigmoid", kernel_initializer=last_init)(x)
+    outputs = ParameterNoise(units=n_actions)(outputs)
 
     return keras.Model(inputs, outputs, name="actor")
 
