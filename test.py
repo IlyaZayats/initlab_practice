@@ -164,7 +164,7 @@ db = MysqlConnector()
 
 r = db.fetch_results("SELECT COUNT(*) FROM actor")
 print(r)
-stop()
+#stop()
 
 #p1.join()
 #os.system('C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqladmin.exe -u root shutdown -p"root"')
