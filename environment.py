@@ -119,6 +119,26 @@ knobs_definition = [
     'temptable_max_ram'#2097152-1073741824-2^64-1
 ]
 
+knobs_for_config = [
+    'innodb_buffer_pool_instances',#1-8-64
+    'innodb_log_file_size',#4194304-50331648-(512GB/innodb_log_files_in_group)
+    'innodb_sync_array_size',#1-1-1024
+    'innodb_ft_cache_size',#1600000-8000000-80000000
+    'innodb_ft_sort_pll_degree',#1-2-32
+    'innodb_purge_threads',#1-4-32
+    'innodb_read_io_threads',#1-4-64
+    'innodb_sort_buffer_size',#65536-1048576-67108864
+    'innodb_write_io_threads',#1-4-64
+    'table_open_cache_instances',#1-16-64
+    'thread_stack',#131072-262144-18446744073709550592
+    'innodb_doublewrite_batch_size',#0-0-256
+    'innodb_doublewrite_files',#2-8-256
+    'innodb_doublewrite_pages',#4-4-512
+    'innodb_log_files_in_group',#2-2-100
+    'relay_log_space_limit',#0-0-18446744073709551615
+]
+
+
 class MysqlConnector:
     def __init__(self, host='localhost', user='root', passwd='root', name='sakila'):
         super().__init__()
@@ -191,6 +211,20 @@ class MySQLEnv:
         db_conn.close_db()
         self.db_restart()
     ##
+    def apply_knobs_in_config(self, knobs):
+        x = []
+        with open("my1.ini", "r") as f:
+            for i in f:
+                x.append(i)
+        for j, v in enumerate(knobs_for_config):
+            if v in ''.join(x):
+                for i in range(len(x)):
+                    if v in x[i]:
+                        x[i] = x[i][:x[i].index('=') + 1] + f'{knobs[j]}' + "\n"
+            else:
+                x.append(f'{j}={knobs[j]}\n')
+        with open("my1.ini", 'w') as f:
+            f.write(''.join(x))
 
     @main_requires_admin
     def db_restart(self):
