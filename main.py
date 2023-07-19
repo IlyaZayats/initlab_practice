@@ -7,11 +7,11 @@ from environment import MySQLEnv
 
 knobs_default = {
     'innodb_adaptive_flushing_lwm': 10,  # 0-10-70
-    'innodb_adaptive_hash_index': True,  # OFF-ON-ON
+    #'innodb_adaptive_hash_index': True,  # OFF-ON-ON
     'innodb_adaptive_max_sleep_delay': 150000,  # 0-150000-1000000
     'innodb_buffer_pool_instances': 8,  # 1-8-64
     'innodb_buffer_pool_size': 134217728,  # 5242880-134217728-2**64-1
-    'innodb_change_buffering': 'all',  # (none-inserts-deletes-changes-purges-all)-all
+    #'innodb_change_buffering': 'all',  # (none-inserts-deletes-changes-purges-all)-all
     'innodb_io_capacity': 200,  # 100-200-2**64-1
     'innodb_log_file_size': 50331648,  # 4194304-50331648-(512GB/innodb_log_files_in_group)
     'innodb_max_dirty_pages_pct': 75,  # 0-75-99.99
@@ -26,11 +26,11 @@ knobs_default = {
     'binlog_stmt_cache_size': 32768,  # 4096-32768-18446744073709547520
     'eq_range_index_dive_limit': 200,  # 0-200-4294967295
     'host_cache_size': 0,  # 0-(-1)-65536
-    'innodb_adaptive_flushing': True,  # OFF-ON-ON
+    #'innodb_adaptive_flushing': True,  # OFF-ON-ON
     'innodb_autoextend_increment': 64,  # 1-64-1000
-    'innodb_buffer_pool_dump_now': False,  # OFF-OFF-ON
-    'innodb_buffer_pool_load_at_startup': True,  # OFF-ON-ON
-    'innodb_buffer_pool_load_now': False,  # OFF-OFF-ON
+    #'innodb_buffer_pool_dump_now': False,  # OFF-OFF-ON
+    #'innodb_buffer_pool_load_at_startup': True,  # OFF-ON-ON
+    #'innodb_buffer_pool_load_now': False,  # OFF-OFF-ON
     'innodb_change_buffer_max_size': 25,  # 0-25-50
     'innodb_commit_concurrency': 0,  # 0-0-1000
     'innodb_compression_failure_threshold_pct': 5,  # 0-5-100
@@ -52,10 +52,10 @@ knobs_default = {
     'innodb_old_blocks_pct': 37,  # 5-37-95
     'innodb_old_blocks_time': 1000,  # 0-1000-2**32-1
     'innodb_online_alter_log_max_size': 134217728,  # 65536-134217728-2**64-1
-    'innodb_page_size': 16384,  # (4096-8192-16384-32768-65536)-16384
+    #'innodb_page_size': 16384,  # (4096-8192-16384-32768-65536)-16384
     'innodb_purge_batch_size': 300,  # 1-300-5000
     'innodb_purge_threads': 41,  # 1-4-32
-    'innodb_random_read_ahead': False,  # OFF-OFF-ON
+    #'innodb_random_read_ahead': False,  # OFF-OFF-ON
     'innodb_read_ahead_threshold': 56,  # 0-56-64
     'innodb_read_io_threads': 4,  # 1-4-64
     'innodb_replication_delay': 0,  # 0-0-4294967295
@@ -64,7 +64,7 @@ knobs_default = {
     'innodb_spin_wait_delay': 6,  # 0-6-2**64-1
     'innodb_sync_spin_loops': 30,  # 0-30-4294967295
     'innodb_thread_sleep_delay': 10000,  # 0-10000-1000000
-    'innodb_use_native_aio': True,  # OFF-ON-ON
+    #'innodb_use_native_aio': True,  # OFF-ON-ON
     'innodb_write_io_threads': 4,  # 1-4-64
     'join_buffer_size': 262144,  # 128-262144-4294967168
     'lock_wait_timeout': 31536000,  # 1-31536000-31536000
@@ -100,7 +100,7 @@ knobs_default = {
     'thread_stack': 262144,  # 131072-262144-18446744073709550592
     'transaction_alloc_block_size': 8192,  # 1024-8192-131072
     'transaction_prealloc_size': 8192,  # 1024-8192-131072
-    'innodb_dedicated_server': False,  # OFF-OFF-ON
+    #'innodb_dedicated_server': False,  # OFF-OFF-ON
     'innodb_doublewrite_batch_size': 0,  # 0-0-256
     'innodb_doublewrite_files': 8,  # 2-8-256
     'innodb_doublewrite_pages': 4,  # 4-4-512
@@ -118,11 +118,11 @@ knobs_default = {
 
 knobs_max = {
     'innodb_adaptive_flushing_lwm': 70,  # 0-10-70
-    'innodb_adaptive_hash_index': True,  # OFF-ON-ON
+    #'innodb_adaptive_hash_index': True,  # OFF-ON-ON
     'innodb_adaptive_max_sleep_delay': 1000000,  # 0-150000-1000000
     'innodb_buffer_pool_instances': 64,  # 1-8-64
     'innodb_buffer_pool_size': (2**64)-1,  # 5242880-134217728-2**64-1
-    'innodb_change_buffering': 'all',  # (none-inserts-deletes-changes-purges-all)-all
+    #'innodb_change_buffering': 'all',  # (none-inserts-deletes-changes-purges-all)-all
     'innodb_io_capacity': (2**64)-1,  # 100-200-2**64-1
     'innodb_log_file_size': 512*1024*1024,  # 4194304-50331648-(512GB/innodb_log_files_in_group)
     'innodb_max_dirty_pages_pct': 99.99,  # 0-75-99.99
@@ -137,11 +137,11 @@ knobs_max = {
     'binlog_stmt_cache_size': 18446744073709547520,  # 4096-32768-18446744073709547520
     'eq_range_index_dive_limit': 4294967295,  # 0-200-4294967295
     'host_cache_size': 65536,  # 0-(-1)-65536
-    'innodb_adaptive_flushing': True,  # OFF-ON-ON
+    #'innodb_adaptive_flushing': True,  # OFF-ON-ON
     'innodb_autoextend_increment': 1000,  # 1-64-1000
-    'innodb_buffer_pool_dump_now': True,  # OFF-OFF-ON
-    'innodb_buffer_pool_load_at_startup': True,  # OFF-ON-ON
-    'innodb_buffer_pool_load_now': True,  # OFF-OFF-ON
+    #'innodb_buffer_pool_dump_now': True,  # OFF-OFF-ON
+    #'innodb_buffer_pool_load_at_startup': True,  # OFF-ON-ON
+    #'innodb_buffer_pool_load_now': True,  # OFF-OFF-ON
     'innodb_change_buffer_max_size': 50,  # 0-25-50
     'innodb_commit_concurrency': 1000,  # 0-0-1000
     'innodb_compression_failure_threshold_pct': 100,  # 0-5-100
@@ -163,10 +163,10 @@ knobs_max = {
     'innodb_old_blocks_pct': 95,  # 5-37-95
     'innodb_old_blocks_time': (2**32)-1,  # 0-1000-2**32-1
     'innodb_online_alter_log_max_size': (2**64)-1,  # 65536-134217728-2**64-1
-    'innodb_page_size': 65536,  # (4096-8192-16384-32768-65536)-16384
+    #'innodb_page_size': 65536,  # (4096-8192-16384-32768-65536)-16384
     'innodb_purge_batch_size': 5000,  # 1-300-5000
     'innodb_purge_threads': 32,  # 1-4-32
-    'innodb_random_read_ahead': True,  # OFF-OFF-ON
+    #'innodb_random_read_ahead': True,  # OFF-OFF-ON
     'innodb_read_ahead_threshold': 64,  # 0-56-64
     'innodb_read_io_threads': 64,  # 1-4-64
     'innodb_replication_delay': 4294967295,  # 0-0-4294967295
@@ -175,7 +175,7 @@ knobs_max = {
     'innodb_spin_wait_delay': (2**64)-1,  # 0-6-2**64-1
     'innodb_sync_spin_loops': 4294967295,  # 0-30-4294967295
     'innodb_thread_sleep_delay': 1000000,  # 0-10000-1000000
-    'innodb_use_native_aio': True,  # OFF-ON-ON
+    #'innodb_use_native_aio': True,  # OFF-ON-ON
     'innodb_write_io_threads': 64,  # 1-4-64
     'join_buffer_size': 4294967168,  # 128-262144-4294967168
     'lock_wait_timeout': 31536000,  # 1-31536000-31536000
@@ -211,7 +211,7 @@ knobs_max = {
     'thread_stack': 18446744073709550592,  # 131072-262144-18446744073709550592
     'transaction_alloc_block_size': 131072,  # 1024-8192-131072
     'transaction_prealloc_size': 131072,  # 1024-8192-131072
-    'innodb_dedicated_server': True,  # OFF-OFF-ON
+    #'innodb_dedicated_server': True,  # OFF-OFF-ON
     'innodb_doublewrite_batch_size': 256,  # 0-0-256
     'innodb_doublewrite_files': 256,  # 2-8-256
     'innodb_doublewrite_pages': 512,  # 4-4-512
@@ -229,11 +229,11 @@ knobs_max = {
 
 knobs_min = {
     'innodb_adaptive_flushing_lwm': 0,  # 0-10-70
-    'innodb_adaptive_hash_index': True,  # OFF-ON-ON
+    #'innodb_adaptive_hash_index': True,  # OFF-ON-ON
     'innodb_adaptive_max_sleep_delay': 0,  # 0-150000-1000000
     'innodb_buffer_pool_instances': 1,  # 1-8-64
     'innodb_buffer_pool_size': 5242880,  # 5242880-134217728-2**64-1
-    'innodb_change_buffering': 'all',  # (none-inserts-deletes-changes-purges-all)-all
+    #'innodb_change_buffering': 'all',  # (none-inserts-deletes-changes-purges-all)-all
     'innodb_io_capacity': 100,  # 100-200-2**64-1
     'innodb_log_file_size': 4194304,  # 4194304-50331648-(512GB/innodb_log_files_in_group)
     'innodb_max_dirty_pages_pct': 0,  # 0-75-99.99
@@ -248,11 +248,11 @@ knobs_min = {
     'binlog_stmt_cache_size': 4096,  # 4096-32768-18446744073709547520
     'eq_range_index_dive_limit': 0,  # 0-200-4294967295
     'host_cache_size': 0,  # 0-(-1)-65536
-    'innodb_adaptive_flushing': False,  # OFF-ON-ON
+    #'innodb_adaptive_flushing': False,  # OFF-ON-ON
     'innodb_autoextend_increment': 1,  # 1-64-1000
-    'innodb_buffer_pool_dump_now': False,  # OFF-OFF-ON
-    'innodb_buffer_pool_load_at_startup': False,  # OFF-ON-ON
-    'innodb_buffer_pool_load_now': False,  # OFF-OFF-ON
+    #'innodb_buffer_pool_dump_now': False,  # OFF-OFF-ON
+    #'innodb_buffer_pool_load_at_startup': False,  # OFF-ON-ON
+    #'innodb_buffer_pool_load_now': False,  # OFF-OFF-ON
     'innodb_change_buffer_max_size': 0,  # 0-25-50
     'innodb_commit_concurrency': 0,  # 0-0-1000
     'innodb_compression_failure_threshold_pct': 0,  # 0-5-100
@@ -274,10 +274,10 @@ knobs_min = {
     'innodb_old_blocks_pct': 5,  # 5-37-95
     'innodb_old_blocks_time': 0,  # 0-1000-2**32-1
     'innodb_online_alter_log_max_size': 65536,  # 65536-134217728-2**64-1
-    'innodb_page_size': 4096,  # (4096-8192-16384-32768-65536)-16384
+    #'innodb_page_size': 4096,  # (4096-8192-16384-32768-65536)-16384
     'innodb_purge_batch_size': 1,  # 1-300-5000
     'innodb_purge_threads': 1,  # 1-4-32
-    'innodb_random_read_ahead': False,  # OFF-OFF-ON
+    #'innodb_random_read_ahead': False,  # OFF-OFF-ON
     'innodb_read_ahead_threshold': 0,  # 0-56-64
     'innodb_read_io_threads': 1,  # 1-4-64
     'innodb_replication_delay': 0,  # 0-0-4294967295
@@ -286,7 +286,7 @@ knobs_min = {
     'innodb_spin_wait_delay': 0,  # 0-6-2**64-1
     'innodb_sync_spin_loops': 0,  # 0-30-4294967295
     'innodb_thread_sleep_delay': 0,  # 0-10000-1000000
-    'innodb_use_native_aio': False,  # OFF-ON-ON
+    #'innodb_use_native_aio': False,  # OFF-ON-ON
     'innodb_write_io_threads': 1,  # 1-4-64
     'join_buffer_size': 128,  # 128-262144-4294967168
     'lock_wait_timeout': 1,  # 1-31536000-31536000
@@ -322,7 +322,7 @@ knobs_min = {
     'thread_stack': 131072,  # 131072-262144-18446744073709550592
     'transaction_alloc_block_size': 1024,  # 1024-8192-131072
     'transaction_prealloc_size': 1024,  # 1024-8192-131072
-    'innodb_dedicated_server': False,  # OFF-OFF-ON
+    #'innodb_dedicated_server': False,  # OFF-OFF-ON
     'innodb_doublewrite_batch_size': 0,  # 0-0-256
     'innodb_doublewrite_files': 2,  # 2-8-256
     'innodb_doublewrite_pages': 4,  # 4-4-512

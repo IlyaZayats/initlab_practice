@@ -5,6 +5,8 @@ import subprocess
 import os
 import psutil
 from datetime import datetime
+import pyuac
+from pyuac import main_requires_admin
 
 knobs_definition = [
     'innodb_adaptive_flushing_lwm',#0-10-70
@@ -168,13 +170,13 @@ class MySQLEnv:
         self.default_knobs = default_knobs
 
     def db_is_alive(self):
-        self.db_con.connect_db()
-        while True:
-            r = self.db_con.fetch_results("SELECT COUNT(*) FROM actor")
-            if r:
-                break
+        flag = True
+        while flag:
+            for proc in psutil.process_iter():
+                if proc.name() == "mysqld.exe":
+                    flag = False
+                    break
             time.sleep(20)
-
     def apply_knobs(self, knobs):
         self.db_is_alive()
         db_conn = MysqlConnector()
@@ -189,9 +191,12 @@ class MySQLEnv:
         self.db_restart()
     ##
 
+    @main_requires_admin
     def db_restart(self):
-        subprocess.call(["\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqladmin.exe\" -u root shutdown -p\"root\""])
-        subprocess.call(["\"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld\" --defaults-file=\"C:\Program Files\MySQL\MySQL Server 8.0\my.ini\" "])
+        os.system("C:\\Windows\\System32\\net.exe stop MySql80")
+        os.system("C:\\Windows\\System32\\net.exe start MySql80")
+        #subprocess.call(["\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqladmin.exe\" -u root shutdown -p\"root\""])
+        #subprocess.call(["\"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqld\" --defaults-file=\"C:\Program Files\MySQL\MySQL Server 8.0\my.ini\" "])
 
     def get_latency(self):
         self.db_con.connect_db()

@@ -5,7 +5,6 @@ import psutil
 from datetime import datetime
 import pyuac
 from pyuac import main_requires_admin
-from multiprocessing import Process
 
 from environment import MysqlConnector
 
@@ -138,26 +137,36 @@ str = '''
 #os.system(str)
 
 import subprocess
-print(pyuac.isUserAdmin())
 #pyuac.runAsAdmin("\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqladmin.exe\" -u root shutdown -p\"root\"")
 
 @main_requires_admin
-def restart():
+def start():
     print(pyuac.isUserAdmin())
     #subprocess.call("\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqladmin.exe\" -u root shutdown -p\"root\"", shell=True)
-    subprocess.call("\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqld\" --defaults-file=\"C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini\"")
+    #subprocess.call("\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqld\" --defaults-file=\"C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini\" --standalone")
+    os.system("C:\\Windows\\System32\\net.exe start MySql80")
+
+@main_requires_admin
+def stop():
+    print(pyuac.isUserAdmin())
+    #subprocess.call("\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqladmin.exe\" -u root shutdown -p\"root\"", shell=True)
+    #subprocess.call("\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqld\" --defaults-file=\"C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini\" --standalone")
+    os.system("C:\\Windows\\System32\\net.exe stop MySql80")
 
 
-
-p1 = Process(target=restart, daemon=True)
-p1.start()
+#p1 = Process(target=restart, daemon=True)
+#p1.start()
+#restart()
+start()
 db = MysqlConnector()
 #r = db.execute("SELECT COUNT(*) FROM actor")
 
 
 r = db.fetch_results("SELECT COUNT(*) FROM actor")
 print(r)
-p1.join()
+stop()
+
+#p1.join()
 #os.system('C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqladmin.exe -u root shutdown -p"root"')
 # knobs_max_list = list(knobs_max.values())
 # print(knobs_max_list)
