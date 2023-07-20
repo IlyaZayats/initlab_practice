@@ -574,7 +574,7 @@ for ep in range(total_episodes):
 with open("output.csv", "w") as f:
     f.write(','.join(knobs_names)+"\n")
     for i in range(len(buffer.action_buffer)):
-        f.write(','.join(buffer.action_buffer[i])+"\n")
+        f.write(','.join(map(str, buffer.action_buffer[i]))+"\n")
 
 print('Magic')
 
