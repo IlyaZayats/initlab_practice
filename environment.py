@@ -12,14 +12,14 @@ knobs_definition = [
     'innodb_adaptive_flushing_lwm',#0-10-70
     #'innodb_adaptive_hash_index',#OFF-ON-ON
     'innodb_adaptive_max_sleep_delay',#0-150000-1000000
-    #!!!'innodb_buffer_pool_instances',#1-8-64
+    'innodb_buffer_pool_instances',#1-8-64
     'innodb_buffer_pool_size',#5242880-134217728-2**64-1
     #'innodb_change_buffering',#(none-inserts-deletes-changes-purges-all)-all
     'innodb_io_capacity',#100-200-2**64-1
-    #!!!'innodb_log_file_size',#4194304-50331648-(512GB/innodb_log_files_in_group)
+    'innodb_log_file_size',#4194304-50331648-(512GB/innodb_log_files_in_group)
     'innodb_max_dirty_pages_pct',#0-75-99.99
     'innodb_max_dirty_pages_pct_lwm',#0-0-99.99
-    #!!!'innodb_sync_array_size',#1-1-1024
+    'innodb_sync_array_size',#1-1-1024
     'innodb_thread_concurrency',#0-0-1000
     'max_heap_table_size',#16384-16777216-18446744073709550592
     'thread_cache_size',#0-(-1)-16384
@@ -43,9 +43,9 @@ knobs_definition = [
     'innodb_flush_log_at_timeout',#1-1-2700
     'innodb_flush_neighbors',#(0-1-2)-1
     'innodb_flushing_avg_loops',#1-30-1000
-    #!!!'innodb_ft_cache_size',#1600000-8000000-80000000
+    'innodb_ft_cache_size',#1600000-8000000-80000000
     'innodb_ft_result_cache_limit',#1000000-2000000000-2**32-1
-    #!!!'innodb_ft_sort_pll_degree',#1-2-32
+    'innodb_ft_sort_pll_degree',#1-2-32
     'innodb_io_capacity_max',#100-?-2**32-1
     'innodb_lock_wait_timeout',#1-50-1073741824
     'innodb_log_buffer_size',#1048576-16777216-4294967295
@@ -57,18 +57,18 @@ knobs_definition = [
     'innodb_online_alter_log_max_size',#65536-134217728-2**64-1
     #'innodb_page_size',#(4096-8192-16384-32768-65536)-16384
     'innodb_purge_batch_size',#1-300-5000
-    #!!!'innodb_purge_threads',#1-4-32
+    'innodb_purge_threads',#1-4-32
     #'innodb_random_read_ahead',#OFF-OFF-ON
     'innodb_read_ahead_threshold',#0-56-64
-    #!!!'innodb_read_io_threads',#1-4-64
+    'innodb_read_io_threads',#1-4-64
     'innodb_replication_delay',#0-0-4294967295
     'innodb_rollback_segments',#1-128-128
-    #!!!'innodb_sort_buffer_size',#65536-1048576-67108864
+    'innodb_sort_buffer_size',#65536-1048576-67108864
     'innodb_spin_wait_delay',#0-6-2**64-1
     'innodb_sync_spin_loops',#0-30-4294967295
     'innodb_thread_sleep_delay',#0-10000-1000000
     #'innodb_use_native_aio',#OFF-ON-ON
-    #!!!'innodb_write_io_threads',#1-4-64
+    'innodb_write_io_threads',#1-4-64
     'join_buffer_size',#128-262144-4294967168
     'lock_wait_timeout',#1-31536000-31536000
     'max_binlog_cache_size',#4096-18446744073709547520-18446744073709547520
@@ -99,20 +99,20 @@ knobs_definition = [
     'stored_program_cache',#16-256-524288
     'table_definition_cache',#400-(-1)-524288
     'table_open_cache',#1-2000-524288
-    #!!!'table_open_cache_instances',#1-16-64
-    #!!!'thread_stack',#131072-262144-18446744073709550592
+    'table_open_cache_instances',#1-16-64
+    'thread_stack',#131072-262144-18446744073709550592
     'transaction_alloc_block_size',#1024-8192-131072
     'transaction_prealloc_size',#1024-8192-131072
     #'innodb_dedicated_server',#OFF-OFF-ON
-    #!!!'innodb_doublewrite_batch_size',#0-0-256
-    #!!!'innodb_doublewrite_files',#2-8-256
-    #!!!'innodb_doublewrite_pages',#4-4-512
-    #!!!'innodb_log_files_in_group',#2-2-100
+    'innodb_doublewrite_batch_size',#0-0-256
+    'innodb_doublewrite_files',#2-8-256
+    'innodb_doublewrite_pages',#4-4-512
+    'innodb_log_files_in_group',#2-2-100
     'innodb_log_spin_cpu_abs_lwm',#0-80-4294967295
     'innodb_log_spin_cpu_pct_hwm',#0-50-100
     'innodb_log_wait_for_flush_spin_hwm',#0-400-2**64-1
     'max_relay_log_size',#0-0-1073741824
-    #!!!'relay_log_space_limit',#0-0-18446744073709551615
+    'relay_log_space_limit',#0-0-18446744073709551615
     'rpl_read_size',#8192-8192-4294959104
     'stored_program_definition_cache',#256-256-524288
     'tablespace_definition_cache',#256-256-524288
@@ -198,33 +198,43 @@ class MySQLEnv:
                     break
             if flag:
                 time.sleep(20)
+    @main_requires_admin
     def apply_knobs(self, knobs):
         self.db_is_alive()
         db_conn = MysqlConnector()
-        for i in range(len(knobs_definition)):
-            sql = f"SET GLOBAL {knobs_definition[i]} = {knobs[i]}"
-            try:
-                db_conn.execute(sql)
-            except:
-                sql = f"SET {knobs_definition[i]} = {knobs[i]}"
-                db_conn.execute(sql)
-        db_conn.close_db()
-        self.db_restart()
-    ##
-    def apply_knobs_in_config(self, knobs):
         x = []
-        with open("my1.ini", "r") as f:
+        with open("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my2.ini", "r") as f:
             for i in f:
                 x.append(i)
-        for j, v in enumerate(knobs_for_config):
-            if v in ''.join(x):
-                for i in range(len(x)):
-                    if v in x[i]:
-                        x[i] = x[i][:x[i].index('=') + 1] + f'{knobs[j]}' + "\n"
+        for i in range(len(knobs_definition)):
+            if knobs_definition[i] in knobs_for_config:
+                x = self.apply_knobs_in_config(knobs[i], knobs_definition[i], x)
+                # if knobs_definition[i] in ''.join(x):
+                #     for j in range(len(x)):
+                #         if knobs_definition[i] in x[j]:
+                #             x[j] = x[j][:x[j].index('=') + 1] + f'{knobs[i]}' + "\n"
+                # else:
+                #     x.append(f'{knobs_definition[i]}={knobs[i]}\n')
             else:
-                x.append(f'{j}={knobs[j]}\n')
-        with open("my1.ini", 'w') as f:
+                sql = f"SET GLOBAL {knobs_definition[i]} = {knobs[i]}"
+                try:
+                    db_conn.execute(sql)
+                except:
+                    sql = f"SET {knobs_definition[i]} = {knobs[i]}"
+                    db_conn.execute(sql)
+        db_conn.close_db()
+        with open("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my2.ini", 'w') as f:
             f.write(''.join(x))
+        self.db_restart()
+    ##
+    def apply_knobs_in_config(self, knobs_val, knobs_name, x):
+        if knobs_name in ''.join(x):
+            for i in range(len(x)):
+                if knobs_name in x[i]:
+                    x[i] = x[i][:x[i].index('=') + 1] + f'{knobs_val}' + "\n"
+        else:
+            x.append(f'{knobs_name}={knobs_val}\n')
+        return x
 
     @main_requires_admin
     def db_restart(self):
@@ -274,17 +284,10 @@ class MySQLEnv:
         self.steps = 0
         self.terminate = False
 
-        flag = self.apply_knobs(self.default_knobs)
-        while not flag:
-            print("Waiting 20 seconds. apply_knobs")
-            time.sleep(20)
-            flag = self.apply_knobs(self.default_knobs)
+        self.db_is_alive()
+        self.apply_knobs(self.default_knobs)
+        self.db_is_alive()
         s = self.get_states()
-        while not s:
-            print("Waiting 20 seconds. get_states")
-            time.sleep(20)
-            s = self.get_states()
-
         latency, internal_states = s
 
         self.last_latency = latency

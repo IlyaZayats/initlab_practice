@@ -141,14 +141,14 @@ import subprocess
 
 @main_requires_admin
 def start():
-    print(pyuac.isUserAdmin())
+    #print(pyuac.isUserAdmin())
     #subprocess.call("\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqladmin.exe\" -u root shutdown -p\"root\"", shell=True)
     #subprocess.call("\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqld\" --defaults-file=\"C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini\" --standalone")
     os.system("C:\\Windows\\System32\\net.exe start MySql80")
 
 @main_requires_admin
 def stop():
-    print(pyuac.isUserAdmin())
+    #print(pyuac.isUserAdmin())
     #subprocess.call("\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqladmin.exe\" -u root shutdown -p\"root\"", shell=True)
     #subprocess.call("\"C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqld\" --defaults-file=\"C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini\" --standalone")
     os.system("C:\\Windows\\System32\\net.exe stop MySql80")
@@ -162,10 +162,11 @@ db = MysqlConnector()
 #r = db.execute("SELECT COUNT(*) FROM actor")
 
 
-r = db.fetch_results("SELECT COUNT(*) FROM actor")
-print(r)
+r = db.fetch_results("SELECT NAME, COUNT from information_schema.INNODB_METRICS where status='enabled' ORDER BY NAME")
+print(len(r))
+print(len(knobs_max))
 #stop()
-
+x = input("Check: ")
 #p1.join()
 #os.system('C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqladmin.exe -u root shutdown -p"root"')
 # knobs_max_list = list(knobs_max.values())
