@@ -203,12 +203,12 @@ class MySQLEnv:
         self.db_is_alive()
         db_conn = MysqlConnector()
         x = []
-        with open("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my2.ini", "r") as f:
+        with open("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini", "r") as f:
             for i in f:
                 x.append(i)
         for i in range(len(knobs_definition)):
             if knobs_definition[i] in knobs_for_config:
-                x = self.apply_knobs_in_config(knobs[i], knobs_definition[i], x)
+                x = self.apply_knobs_in_config(int(knobs[i]), knobs_definition[i], x)
                 # if knobs_definition[i] in ''.join(x):
                 #     for j in range(len(x)):
                 #         if knobs_definition[i] in x[j]:
@@ -216,14 +216,14 @@ class MySQLEnv:
                 # else:
                 #     x.append(f'{knobs_definition[i]}={knobs[i]}\n')
             else:
-                sql = f"SET GLOBAL {knobs_definition[i]} = {knobs[i]}"
+                sql = f"SET GLOBAL {knobs_definition[i]} = {int(knobs[i])}"
                 try:
                     db_conn.execute(sql)
                 except:
-                    sql = f"SET {knobs_definition[i]} = {knobs[i]}"
+                    sql = f"SET {knobs_definition[i]} = {int(knobs[i])}"
                     db_conn.execute(sql)
         db_conn.close_db()
-        with open("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my2.ini", 'w') as f:
+        with open("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my.ini", 'w') as f:
             f.write(''.join(x))
         self.db_restart()
     ##
@@ -255,10 +255,9 @@ class MySQLEnv:
         db_conn = MysqlConnector()
         sql = 'SELECT NAME, COUNT from information_schema.INNODB_METRICS where status="enabled" ORDER BY NAME'
         res = db_conn.fetch_results(sql)
-        res_dict = {}
-        for (k, v) in res:
-            res_dict[k] = v
-        internal_metrics.append(res_dict)
+        l = []
+        for i, v in enumerate(res):
+            internal_metrics.append(v.get("COUNT"))
         return internal_metrics
 
     def get_states(self):

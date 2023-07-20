@@ -163,7 +163,11 @@ db = MysqlConnector()
 
 
 r = db.fetch_results("SELECT NAME, COUNT from information_schema.INNODB_METRICS where status='enabled' ORDER BY NAME")
-print(len(r))
+l = []
+for i,v in enumerate(r):
+    l.append(v.get("COUNT"))
+print(r)
+print(l)
 print(len(knobs_max))
 #stop()
 x = input("Check: ")

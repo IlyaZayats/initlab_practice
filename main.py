@@ -338,6 +338,8 @@ knobs_min = {
     'temptable_max_ram':  2097152# 2097152-1073741824-2^64-1
 }
 
+n_states = 74
+n_actions = 98
 #Сделай
 knobs_min_list = list(knobs_min.values())
 knobs_max_list = list(knobs_max.values())
@@ -396,17 +398,17 @@ class OUActionNoise:
             self.x_prev = np.zeros_like(self.mean)
 
 
-states_amount = 74
-knobs_amount = 98
+# n_states = 74
+# n_actions = 98
 class Buffer:
     def __init__(self, capacity=100000, batch_size=16):
         self.capacity = capacity
         self.batch_size = batch_size
         self.counter = 0
-        self.state_buffer = np.zeros((self.capacity, states_amount))
-        self.action_buffer = np.zeros((self.capacity, knobs_amount))
+        self.state_buffer = np.zeros((self.capacity, n_states))
+        self.action_buffer = np.zeros((self.capacity, n_actions))
         self.reward_buffer = np.zeros((self.capacity, 1))
-        self.next_state_buffer = np.zeros((self.capacity, states_amount))
+        self.next_state_buffer = np.zeros((self.capacity, n_states))
 
     def record(self, observation):
         index = self.counter % self.capacity
@@ -456,9 +458,9 @@ class Buffer:
 def update_target(target_weights, weights, tau):
     for (a, b) in zip(target_weights, weights):
         a.assign(b * tau + a * (1 - tau))
-def get_model_actor(n_states, n_actions):
+def get_model_actor():
     last_init = tf.random_uniform_initializer(minval=-0.003, maxval=0.003)
-    inputs = keras.Input((n_states,))
+    inputs = keras.Input(shape=(n_states))
     x = keras.layers.Dense(units=128)(inputs)
     x = keras.layers.LeakyReLU(alpha=0.2)(x)
     x = keras.layers.BatchNormalization()(x)
@@ -476,11 +478,11 @@ def get_model_actor(n_states, n_actions):
 
     return keras.Model(inputs, outputs, name="actor")
 
-def get_model_critic(n_states, n_actions):
-    state_input = keras.layers.Input((n_states,))
+def get_model_critic():
+    state_input = keras.layers.Input(shape=(n_states))
     x_s = keras.layers.Dense(units=128)(state_input)
 
-    action_input = keras.layers.Input((n_actions,))
+    action_input = keras.layers.Input(shape=(n_actions))
     x_a = keras.layers.Dense(units=128)(action_input)
 
     concat = keras.layers.Concatenate()([x_s, x_a])
@@ -499,23 +501,20 @@ def get_model_critic(n_states, n_actions):
 
 def policy(state, noise_object):
     sampled_actions = tf.squeeze(actor_model(state))
-    for i in range(len(sampled_actions)):
-        noise = noise_object()
-        sampled_actions[i] = sampled_actions[i].numpy() + noise
-
+    noise = noise_object()
+    sampled_actions = sampled_actions.numpy() + noise
     legal_actions = np.clip(sampled_actions, knobs_min_list, knobs_max_list)
-
-    return [np.squeeze(legal_actions)]
+    return np.squeeze(legal_actions)
 
 
 std_dev = 0.2
 ou_noise = OUActionNoise(mean=np.zeros(1), std_deviation=float(std_dev) * np.ones(1))
 
-actor_model = get_model_actor(states_amount, knobs_amount)
-critic_model = get_model_critic(states_amount, knobs_amount)
+actor_model = get_model_actor()
+critic_model = get_model_critic()
 
-target_actor = get_model_actor(states_amount, knobs_amount)
-target_critic = get_model_critic(states_amount, knobs_amount)
+target_actor = get_model_actor()
+target_critic = get_model_critic()
 
 target_actor.set_weights(actor_model.get_weights())
 target_critic.set_weights(critic_model.get_weights())
@@ -542,12 +541,15 @@ for ep in range(total_episodes):
     prev_state = env.init()
     episodic_reward = 0
 
-    while True:
-
+    print("-----epoch_1-----")
+    for i in range(25):
+        print("--step_" + str(i) + "--")
         tf_prev_state = tf.expand_dims(tf.convert_to_tensor(prev_state), 0)
 
         actions = policy(tf_prev_state, ou_noise)
+        print(actions)
         state, reward, done, info = env.step(actions)
+        print(state)
 
         buffer.record((prev_state, actions, reward, state))
         episodic_reward += reward
@@ -566,5 +568,7 @@ for ep in range(total_episodes):
     avg_reward = np.mean(ep_reward_list[-40:])
     print("Episode * {} * Avg Reward is ==> {}".format(ep, avg_reward))
     avg_reward_list.append(avg_reward)
+
+print('Magic')
 
 
