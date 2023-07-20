@@ -543,7 +543,7 @@ for ep in range(total_episodes):
     episodic_reward = 0
 
     print(f"-----epoch_{ep}-----")
-    for i in range(25):
+    for i in range(5):
         print("--step_" + str(i) + "--")
         tf_prev_state = tf.expand_dims(tf.convert_to_tensor(prev_state), 0)
 
