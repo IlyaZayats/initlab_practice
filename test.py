@@ -160,7 +160,7 @@ def stop():
 start()
 db = MysqlConnector()
 #r = db.execute("SELECT COUNT(*) FROM actor")
-
+print(','.join(list(knobs_max.keys())))
 
 r = db.fetch_results("SELECT NAME, COUNT from information_schema.INNODB_METRICS where status='enabled' ORDER BY NAME")
 l = []

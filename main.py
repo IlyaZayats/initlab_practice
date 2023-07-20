@@ -344,8 +344,9 @@ n_actions = 98
 knobs_min_list = list(knobs_min.values())
 knobs_max_list = list(knobs_max.values())
 knobs_default_list = list(knobs_default.values())
+knobs_names = list(knobs_default.keys())
 
-env = MySQLEnv(list(knobs_default.keys()), knobs_default_list)
+env = MySQLEnv(knobs_names, knobs_default_list)
 env.init()
 
 class ParameterNoise(keras.layers.Layer):
@@ -535,7 +536,7 @@ buffer = Buffer(50000, 16)
 
 ep_reward_list = []
 avg_reward_list = []
-
+last_actions = []
 for ep in range(total_episodes):
 
     prev_state = env.init()
@@ -547,6 +548,7 @@ for ep in range(total_episodes):
         tf_prev_state = tf.expand_dims(tf.convert_to_tensor(prev_state), 0)
 
         actions = policy(tf_prev_state, ou_noise)
+        last_actions = actions
         print(actions)
         state, reward, done, info = env.step(actions)
         print(state)
@@ -568,6 +570,11 @@ for ep in range(total_episodes):
     avg_reward = np.mean(ep_reward_list[-40:])
     print("Episode * {} * Avg Reward is ==> {}".format(ep, avg_reward))
     avg_reward_list.append(avg_reward)
+
+with open("output.csv", "w+") as f:
+    f.write(','.join(knobs_names)+"\n")
+    for i in range(len(buffer.action_buffer)):
+        f.write(','.join(buffer.action_buffer[i])+"\n")
 
 print('Magic')
 
