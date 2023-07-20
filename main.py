@@ -571,7 +571,7 @@ for ep in range(total_episodes):
     print("Episode * {} * Avg Reward is ==> {}".format(ep, avg_reward))
     avg_reward_list.append(avg_reward)
 
-with open("output.csv", "w+") as f:
+with open("output.csv", "w") as f:
     f.write(','.join(knobs_names)+"\n")
     for i in range(len(buffer.action_buffer)):
         f.write(','.join(buffer.action_buffer[i])+"\n")
