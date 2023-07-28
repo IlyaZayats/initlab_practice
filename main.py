@@ -340,7 +340,7 @@ knobs_min = {
 
 n_states = 74
 n_actions = 98
-#Сделай
+
 knobs_min_list = list(knobs_min.values())
 knobs_max_list = list(knobs_max.values())
 knobs_default_list = list(knobs_default.values())
@@ -544,7 +544,7 @@ for ep in range(total_episodes):
 
     print(f"-----epoch_{ep}-----")
     for i in range(5):
-        print("--step_" + str(i) + "--")
+        print(f"--step_{i}--")
         tf_prev_state = tf.expand_dims(tf.convert_to_tensor(prev_state), 0)
 
         actions = policy(tf_prev_state, ou_noise)
